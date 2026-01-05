@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -27,7 +27,8 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import type { ChangeEvent, FormEvent } from "react";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
+
 
 interface DeviceInfo {
   deviceId: string;
@@ -53,9 +54,7 @@ interface AdminUserData extends UserData {
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-declare namespace JSX {
-  interface IntrinsicElements {
-    [elemName: string]: any;
+
   }
 }
 
