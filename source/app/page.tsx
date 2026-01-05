@@ -85,45 +85,51 @@ export default function LoginPage() {
     });
     setDeviceInfo(generateDeviceInfo());
 
-    // Check for existing session
-    const checkSession = async () => {
-      try {
-        const userData = localStorage.getItem("user");
-        if (!userData) return;
+    // DEMO MODE: session kontrolü (API yok)
+const checkSession = () => {
+  const userData = localStorage.getItem("user");
+  if (userData) {
+    router.replace("/dashboard");
+  }
+};
 
-        const user = JSON.parse(userData);
-        const response = await fetch("/api/check-auth", {
-          headers: {
-            "x-user-email": user.email,
-            "x-user-ptp": user.ptp || "",
-          },
-        });
-        const data = await response.json();
-
-        if (response.ok && data.authenticated) {
-          router.replace("/dashboard");
-        } else {
-          // Clear invalid session
-          localStorage.removeItem("user");
-          localStorage.removeItem("deviceToken");
-        }
-      } catch (error) {
-        console.error("Auth check error:", error);
-        // Clear any invalid tokens
-        localStorage.removeItem("user");
-        localStorage.removeItem("deviceToken");
-      }
-    };
 
     checkSession();
   }, [router]);
 
   const handleCredentialsSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
+
+  // 🔥 DEMO LOGIN
+  if (email === "admin@demo.com" && password === "1234") {
+    const demoUser = {
+      id: 1,
+      name: "Demo Admin",
+      email: "admin@demo.com",
+      is_admin: true,
+      authenticated: true,
+    };
+
+    localStorage.setItem("user", JSON.stringify(demoUser));
+    localStorage.setItem("deviceToken", "demo-device-token");
+
+    toast.success("Demo login successful");
+
+    setTimeout(() => {
+      router.replace("/dashboard");
+    }, 300);
+
+    return;
+  }
+
+  setLoading(false);
+  setError("Hatalı email veya şifre (demo: admin@demo.com / 1234)");
+};
+
 
     try {
       const response = await fetch("/api/verify-credentials", {
